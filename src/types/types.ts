@@ -29,6 +29,22 @@ export type UserDbType = {
     createdAt: string
 }
 
+export type UserAccountDbType = {
+    _id: ObjectId
+    accountData: {
+        login: string
+        email: string
+        passwordHash: string
+        passwordSalt: string
+        createdAt: string
+    }
+    emailConfirmation: {
+        confirmationCode: string
+        expirationDate: number
+        isConfirmed: boolean
+    }
+}
+
 export type CommentDbType = {
     _id: ObjectId
     postId:string

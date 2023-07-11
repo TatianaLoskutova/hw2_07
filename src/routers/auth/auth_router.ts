@@ -10,10 +10,8 @@ import {MeViewModel} from '../../models/auth/meViewModel';
 import {UserInputModel} from '../../models/users/userInputModel';
 import {emailValidation, loginValidation, passwordValidation
 } from '../../middlewares/users_validation/users_validation';
-import {RegistrationCofirmationCodeModel} from '../../models/registration/registrationCofirmationCode';
+import {RegistrationConfirmationCodeModel} from '../../models/registration/registrationCofirmationCode';
 import {authService} from '../../domain/auth/auth_service';
-import {usersRepository} from '../../repositories/users/users_repository';
-import {usersQueryRepository} from '../../repositories/users/users_query_repository';
 
 
 
@@ -49,17 +47,17 @@ authRouter.post('/registration',
             res.sendStatus(400)
             return
         }
-    const createUserResult = await usersService.createUser(req.body)
+    const createUserResult = await authService.createUser(req.body)
         if (createUserResult) {
             res.sendStatus(204)
         }
 })
 
-// authRouter.post('/registration-confirmation', async (req: RequestWithBody<RegistrationCofirmationCodeModel>, res: Response) => {
-//     //confirmUserMiddleware
-//     const resultConfirmation = await authService.doOperation()
-//     res.sendStatus(204)
-// })
+authRouter.post('/registration-confirmation', async (req: RequestWithBody<RegistrationConfirmationCodeModel>, res: Response) => {
+    //confirmUserMiddleware
+    const resultConfirmation = await authService.doOperation()
+    res.sendStatus(204)
+})
 
 // authRouter.post('/registration-email-resending', async (req: Request, res: Response) => {
 //     res.sendStatus(204)

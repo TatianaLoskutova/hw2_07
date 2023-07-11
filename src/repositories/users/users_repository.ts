@@ -1,10 +1,14 @@
 import {ObjectId} from 'mongodb';
-import {UserDbType} from '../../types/types';
+import {UserAccountDbType, UserDbType} from '../../types/types';
 import {UserViewModel} from '../../models/users/userViewModel';
-import {usersCollection} from '../../db/db';
+import {usersAccountsCollection, usersCollection} from '../../db/db';
 
 
 export const usersRepository = {
+    async saveUserToDb(user: UserAccountDbType){
+        const result = await usersAccountsCollection.insertOne(user)
+        return user
+    },
     async addUserToDb(addedUser: UserDbType): Promise<UserViewModel> {
         const result = await usersCollection.insertOne(addedUser)
         return {

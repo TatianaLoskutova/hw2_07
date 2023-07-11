@@ -10,12 +10,12 @@ export const emailAdapter = {
                 pass: 'lbmubflowrplghpx'
             },
         })
-        let result = {
+        let result = await transport.sendMail({
             from: 'Tanisha <tanishasamurai@gmail.com>',
             to: email,
             subject: subject,
             html: message
-        };
-        return  result
+        });
+        return result
     },
 }
