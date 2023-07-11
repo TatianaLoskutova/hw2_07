@@ -23,10 +23,10 @@ export const usersQueryRepository = {
         if (searchLoginTerm || searchEmailTerm) {
             filter.$or = []
             if (searchLoginTerm) {
-                filter.$or.push({ login: { $regex: searchLoginTerm, $options: 'i' } })
+                filter.$or.push({login: {$regex: searchLoginTerm, $options: 'i'}})
             }
             if (searchEmailTerm) {
-                filter.$or.push({ email: { $regex: searchEmailTerm, $options: 'i' } })
+                filter.$or.push({email: {$regex: searchEmailTerm, $options: 'i'}})
             }
         }
 
@@ -59,6 +59,19 @@ export const usersQueryRepository = {
             login: foundedUser.login,
             email: foundedUser.email,
             createdAt: foundedUser.createdAt
+        }
+    },
+
+    async getUserByEmailFromDb(email: string): Promise<UserViewModel | null> {
+        const userByEmail = await usersCollection.findOne({email: email});
+        if (!userByEmail) {
+            return null
+        }
+        return {
+            id: userByEmail._id.toString(),
+            login: userByEmail.login,
+            email: userByEmail.email,
+            createdAt: userByEmail.createdAt
         }
     }
 }

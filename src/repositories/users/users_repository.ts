@@ -20,6 +20,14 @@ export const usersRepository = {
         return user
     },
 
+    async getUserByPasswordFromDb(password: string): Promise<UserDbType | null> {
+        const user = await usersCollection.findOne({ passwordHash: password });
+        if (!user) {
+            return null
+        }
+        return user
+    },
+
     async deleteUserById(id: string): Promise<boolean>{
         const result = await usersCollection.deleteOne({_id: new ObjectId(id)})
         return result.deletedCount === 1

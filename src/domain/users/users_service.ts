@@ -45,6 +45,23 @@ export const usersService = {
         return user
     },
 
+    async getUserByPassword(password: string): Promise<UserViewModel | null> {
+        const user = await usersRepository.getUserByPasswordFromDb(password)
+        if (!user) return null
+        const passwordHash = await this._generateHash(password, user.passwordSalt);
+
+        if (passwordHash) {
+            return {
+                id: user._id.toString(),
+                login: user.login,
+                email: user.email,
+                createdAt: user.createdAt
+            };
+        }
+        return null;
+    },
+
+
     async _generateHash(password: string, salt: string) {
         const hash = await bcrypt.hash(password, salt)
         return hash
@@ -52,7 +69,15 @@ export const usersService = {
 
     async deleteAllUsers(): Promise<boolean> {
         return  await usersRepository.deleteAllUsers()
-    }
+    },
+
+    async getUserByEmail(email: string): Promise<UserViewModel | null> {
+        const getUserByEmail = await usersQueryRepository.getUserByEmailFromDb(email);
+        if (getUserByEmail) {
+            return getUserByEmail
+        }
+        return null
+    },
 
 }
 
