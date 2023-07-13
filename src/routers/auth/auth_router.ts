@@ -12,6 +12,9 @@ import {emailValidation, loginValidation, passwordValidation
 } from '../../middlewares/users_validation/users_validation';
 import {RegistrationConfirmationCodeModel} from '../../models/registration/registrationCofirmationCode';
 import {authService} from '../../domain/auth/auth_service';
+import {RegistrationEmailResending} from '../../models/registration/registrationEmailResending';
+import {registrationEmailResendingCheck} from '../../middlewares/registration_validation/registration_validator';
+
 
 
 
@@ -22,7 +25,7 @@ authRouter.post('/login',
     password,
     errorsValidation,
     async (req:RequestWithBody<LoginInputModel>, res: Response) => {
-    const user = await usersService.checkCredentials(req.body)
+    const user = await authService.checkCredentials(req.body)
         if (!user) {
             res.sendStatus(401)
             return
@@ -55,13 +58,27 @@ authRouter.post('/registration',
 
 authRouter.post('/registration-confirmation', async (req: RequestWithBody<RegistrationConfirmationCodeModel>, res: Response) => {
     //confirmUserMiddleware
-    const resultConfirmation = await authService.doOperation()
-    res.sendStatus(204)
+    const resultConfirmation = await authService.confirmEmail(req.body.code)
+    if (resultConfirmation) {
+        res.sendStatus(204)
+    } else {
+        res.sendStatus(400)
+    }
+
 })
 
-// authRouter.post('/registration-email-resending', async (req: Request, res: Response) => {
-//     res.sendStatus(204)
-// })
+authRouter.post('/registration-email-resending',
+    registrationEmailResendingCheck,
+    errorsValidation,
+    async (req: RequestWithBody<RegistrationEmailResending>, res: Response) => {
+    const result = await  authService.confirmEmail(req.body.email)
+        if (result) {
+            res.sendStatus(204)
+        } else {
+            res.sendStatus(400)
+        }
+
+})
 
 authRouter.get('/me',
     authValidationBearer,

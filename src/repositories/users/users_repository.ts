@@ -20,7 +20,7 @@ export const usersRepository = {
     },
 
     async findByLoginOrEmail(loginOrEmail: string) {
-        const user = await usersCollection.findOne({ $or: [ { email: loginOrEmail }, { login: loginOrEmail } ] })
+        const user = await usersAccountsCollection.findOne({ $or: [ { email: loginOrEmail }, { login: loginOrEmail } ] })
         return user
     },
 
@@ -30,6 +30,20 @@ export const usersRepository = {
             return null
         }
         return user
+    },
+
+    async findUserByConfirmationCode(confirmationCode: string): Promise<UserAccountDbType | null> {
+        const user = await usersAccountsCollection.findOne({'emailConfirmation.confirmationCode': confirmationCode})
+        if (user) {
+            return user
+        }
+        return null
+    },
+
+    async updateConfirmation(_id: ObjectId) {
+        let result = await usersAccountsCollection.updateOne({_id},
+            {$set: {'emailConfirmation.isConfirmed': true}})
+        return result.modifiedCount === 1
     },
 
     async deleteUserById(id: string): Promise<boolean>{

@@ -1,5 +1,6 @@
 import {ObjectId} from 'mongodb'
 import {Request} from 'express';
+import {WithId} from 'mongodb';
 
 export type BlogMongoDbType = {
     _id: ObjectId
@@ -29,20 +30,31 @@ export type UserDbType = {
     createdAt: string
 }
 
-export type UserAccountDbType = {
-    _id: ObjectId
-    accountData: {
-        login: string
-        email: string
-        passwordHash: string
-        passwordSalt: string
-        createdAt: string
-    }
-    emailConfirmation: {
-        confirmationCode: string
-        expirationDate: number
-        isConfirmed: boolean
-    }
+export type UserAccountDbType = WithId<{
+    // _id: ObjectId
+    accountData: UserAccountType
+    emailConfirmation: EmailConfirmationType
+}>
+
+export type EmailConfirmationType = {
+    confirmationCode: string
+    expirationDate: number
+    isConfirmed: boolean
+    // sentEmail: SentEmailType[]
+}
+export type UserAccountType = {
+    login: string
+    email: string
+    passwordHash: string
+    // passwordSalt: string // salt под вопросом, смотря где
+    createdAt: string
+}
+// надо ли для ДЗ хер пойми
+export type RegistrationDataType = {
+    ip: string
+}
+export type SentEmailType = {
+    sentDate: string
 }
 
 export type CommentDbType = {
