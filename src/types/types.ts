@@ -38,7 +38,7 @@ export type UserAccountDbType = WithId<{
 
 export type EmailConfirmationType = {
     confirmationCode: string
-    expirationDate: number
+    expirationDate: Date
     isConfirmed: boolean
     // sentEmail: SentEmailType[]
 }
